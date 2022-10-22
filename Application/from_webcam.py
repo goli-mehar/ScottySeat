@@ -1,0 +1,1 @@
+#file to connect to webcam with sustained acces to sample image regularly

@@ -1,0 +1,1 @@
+#given an image run the specified model and return the bounding boxes+classifications+confidences
