@@ -1,24 +1,12 @@
-#given and image, apply some image processing techniques
-
-#take in an image
-
-#increase contrast
-
-#increase brightness (variable for level)
-
-#denoise
 import numpy as np
 import cv2 as cv
 from matplotlib import pyplot as plt
 
+#given and image, apply some image processing techniques
+def preprocess(img, alpha=1.3, beta=0):
+    #alpha for contrast and beta for brightness
 
+    img = cv.convertScaleAbs(img, alpha=alpha, beta=beta)
+    img = cv.fastNlMeansDenoisingColored(img,None,5,10,7,21)
 
-#img = cv.imread('/Users/mehargoli/Documents/College Work/18500/ScottySeat/Testing Images/Overhead #2.jpg')
-#dst = cv.fastNlMeansDenoisingColored(img,None,5,10,7,21)
-
-
-
-
-plt.subplot(121),plt.imshow(img)
-plt.subplot(122),plt.imshow(dst)
-plt.show()
+    return img
