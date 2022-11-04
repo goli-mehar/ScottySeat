@@ -1,0 +1,26 @@
+{% extends "scottyseats/base.html" %}
+
+{% block content %}
+    <div class="container-side">
+        <div class="container">
+            <div id="header" class="container_left">
+                <div id = "roomname" class="big-heading_no_spacing_top">Wean 1101</div>
+            </div>
+            <div id="game" class = "grid"></div>
+            <div id="footer" class="container_right">
+                <div id = "available" class="big-heading_no_spacing">Available : ...</div>
+                <div id = "occupied" class="big-heading_no_spacing">Occupied : ...</div>
+            </div>
+        </div>
+        <div class="container">
+            <ul id="roomlist" class="roomlist">Wean 1101</ul>
+        </div>
+    </div>
+    <span id="error" class="error"></span>
+    <script>
+        var MoveURL = "{% url 'showmap' %}"
+        var roomname = "wean1101"
+        window.onload = initialize;
+    </script>
+{% endblock %}
+
