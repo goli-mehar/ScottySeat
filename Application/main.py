@@ -1,40 +1,29 @@
-#This file calls all different classes for product to function
+import cv2, torch,time,json
+import numpy as np
+from preprocess_image import preprocess
 
-#Setup Pseudocode (will be removed later)
+def main():
 
-# intiitalize variables
+    #argv camera path, model path, output path,
+    camera = cv2.VideoCapture(1, cv2.CAP_AVFOUNDATION)
+    model = torch.hub.load('ultralytics/yolov5', 'yolov5l')
 
-#Open Access to Webcam and run (forever)
-# System is running forever:
-#   LOOP CONDITION: vaiables = sample_count, sample_time, max_samples
-#       sample_current_count must be less than = max_samples
-#       sample_count < (max_samples) aka 60 (60 samples per second)
-#       sample_time < (max_sample_time) aka 30 seconds 
-#   
-#   
-#   if time%sample_time == 0:
-#       1. preprocess_image() (Input: Image File, Output: Image File)
-#       2. run_model() (Input: Image File, Output: BoundaryBoxes+Classifications+ConfidenceScores)
-#       3. store_output() (Input: Model Output, Output: NULL - stores data in local folder(samples))
-#       4. (sample_current_count++)
-#       5. Logging Info??? (Time, Raw_Image,Preprocessed,Model_Output)
-# 
-#       If (batched_samples):
-#          1. if (sample_current_count) = (sample_count) then:
-#               a. combine_samples() = (Input: Folder with Image Data, Output: Single Image Output)
-#               b. to_webapp() = (Input: Folder with samples, Output: NULL - sends to webapp)
-#               c. (sample_current_count) = 0
-#               d. Logging Info??? (Time, Single Image Output)
-#       Else:
-#           1. to_webapp() = (Input: Folder with samples, Output: NULL - sends to webapp)
-#           2. sample_current_count = 0
-#           3. Logging Info??? (Time, Single Image Output)
-#   time++      
-#
-# Error messages will be needed for each inner function
-# Testing function for the system loop in case it fails -> will only run during testing, turned off when running for data processing
-#       Conditions: vaiables = sample_count, sample_time, max_samples
-# Other functions to conisder: using time to check model tun time, preprocessing and postprocessing time, also webapp time
-# for testing webapp -> maybe have it send a message back?
+    while True:
+        #img = camera.read()
+        img = cv2.imread('/Users/mehargoli/Documents/College Work/18500/ScottySeat/Testing Images/Overhead #2.jpg')
+        img = preprocess(img)
+        out = model(img)
 
-# Other things: how exactly to log, what data to log
+        results = out.pandas().xyxy[0].values
+        results_chairs = [res for res in results if res[-1] == 'chair']
+        results_people = [res for res in results if res[-1] == 'person']
+       
+        #np.savetxt(results_chairs)
+        
+        with open('result.txt', 'w') as f:
+            f.write(str(results_chairs))
+        
+        time.sleep(60)
+
+main()
+
