@@ -1,6 +1,7 @@
 #file to connect to webcam with sustained acces to sample image regularly
 #code source https://www.youtube.com/watch?v=FygLqV15TxQ, https://stackoverflow.com/questions/58927474/systemerror-class-cv2-videocapture-returned-a-result-with-an-error-set
 import cv2
+from preprocess_image import preprocess
 
 #establish connection to camera
 def establish_connection(path):
