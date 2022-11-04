@@ -1,0 +1,22 @@
+All Code for SocttySeat Programs
+
+File Structure:
+
+- Application:
+---- logging
+----- function_testing
+------ fromwebcam_test.py
+------ preprocessimage_test.py
+-- main.py
+-- from_webcam.py
+-- preprocess_image.py
+-- run_model.py
+-- combine_samples.py
+-- to_webapp.py
+-- Model_Development
+----- model.py
+----- model_training
+-------- model_train.py
+-------- model_test.py
+:wq!
+
