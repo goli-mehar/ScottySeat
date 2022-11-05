@@ -18,11 +18,16 @@ from django.views.decorators.csrf import csrf_exempt
 import os
 import math
 from datetime import datetime
+import sys
+sys.path.insert(0,'/Users/mink/Documents/ScottySeat/Application')
+from main import main
 
-distance_threshold = 70
+
+
+distance_threshold = 200
 mapwidth = 800
 mapheight = 500
-persepctiveRatio = 230/490
+persepctiveRatio = 200/490
 def get_global_json_dumps_serializer(request):
     room_information = RoomModel.objects.select_for_update().all().filter(roomnumber=request.roomname)[0]
     room_map = {
@@ -44,20 +49,50 @@ def get_global_json_dumps_serializer(request):
     return response
 
 def straighten(x, y):
+    divideRatio = 1/2
+    offsetRatio = 1/4
+    top = 300/mapwidth
+    bottom = 600/mapwidth
     e = ((1-persepctiveRatio) * mapheight)/2
+    mide = (1-divideRatio) * e
     e = ((mapwidth - y)/mapwidth) * e
-    if (x <= e): return (0, y)
-    if (x >= (mapheight - e)): return (mapheight, y)
-    newx = ((x - e)/(mapheight - 2*e))*mapheight
     f = (mapwidth/(mapwidth - 2*e)) * y
     if (f >= mapwidth): f = mapwidth
-    return (newx, f)
+    newf = ((f - top*mapwidth)/((bottom-top)*mapwidth))*mapwidth
+    if (x <= e): return (0, newf)
+    if (x >= (mapheight - e)): return (mapheight, newf)
+    ifmid = -1 if (x >= mapheight/2) else 1
+    newx = ((x - e)/(mapheight - 2*e))*mapheight + ifmid * mide * offsetRatio
+    return (newx, newf)
+# def straighten(x, y):
+#     e = ((1-persepctiveRatio) * mapheight)/2
+#     e = ((mapwidth - y)/mapwidth) * e
+#     if (x <= e): return (0, y)
+#     if (x >= (mapheight - e)): return (mapheight, y)
+#     newx = ((x - e)/(mapheight - 2*e))*mapheight
+#     f = (mapwidth/(mapwidth - 2*e)) * y
+#     if (f >= mapwidth): f = mapwidth
+#     return (newx, f)
+# def straighten(x, y):
+#     divideRatio = 1/2
+#     e = ((1-persepctiveRatio) * mapheight)/2
+#     mide = ((1-divideRatio)**2) * e
+#     e = ((mapwidth - y)/mapwidth) * e
+#     f = (mapwidth/(mapwidth - 2*e)) * y
+#     if (f >= mapwidth): f = mapwidth
+#     ifmid = -1 if (x >= mapheight/2) else 1
+#     newx = ((x - e)/(mapheight - 2*e))*mapheight 
+#     if (newx <= 0): return (0, f)
+#     if (newx >= mapheight): return (mapheight, f)
+#     return (newx, f)
+
 
 @csrf_exempt 
 def show_map(request):
     now = datetime.now()
     # current_time = now.strftime("%H:%M:%S")
     print("Starting Parsing Time =", now)
+    main()
     my_list = [];
     columns = [] # To store column names
     seatcount = 0
@@ -65,7 +100,7 @@ def show_map(request):
     occupied = 0
     seats = []
     person_or_chair = []
-    with open('/Users/mink/Documents/b3/scottyseats/data/data.txt') as f:
+    with open('/Users/mink/Documents/Scottyseat/b3/scottyseats/data/data.txt') as f:
         lines = f.readlines()
         for line in lines:
             line = line.strip()
