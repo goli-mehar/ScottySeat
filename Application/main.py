@@ -11,18 +11,21 @@ def main():
     # while True:
         #img = camera.read()
 
-    img = cv2.imread('/Users/mink/Documents/ScottySeat/Testing Images/IMG_4574 Large.jpeg')
+    img = cv2.imread('insert_path_here/ScottySeat/Testing Images/IMG_4575 Large.jpeg')
     img = preprocess(img)
     out = model(img)
 
     results = out.pandas().xyxy[0].values
+
     results_chairs = [res for res in results if res[-1] == 'chair']
     results_people = [res for res in results if res[-1] == 'person']
+    results_table = [res for res in results if res[-1] == 'dining table']
    
     #np.savetxt(results_chairs)
     width, height = img.shape
-    results = results_chairs + results_people
-    with open('/Users/mink/Documents/ScottySeat/b3/scottyseats/data/data.txt', 'w') as f:
+    results = results_chairs + results_people + results_table
+
+    with open('insert_path_here/ScottySeat/b3/scottyseats/data/data.txt', 'w') as f:
         for a in results:
             f.write(str(a[-2]))
             f.write(str(' '))
@@ -34,8 +37,10 @@ def main():
             f.write(str(' '))
             f.write(str(float(a[3])/width))
             f.write(str('\n'))
+
+            print(a)
         
 #         time.sleep(60)
 
-# main()
+main()
 
