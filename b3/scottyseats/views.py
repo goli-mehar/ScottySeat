@@ -19,8 +19,8 @@ import os
 import math
 from datetime import datetime
 import sys
-sys.path.insert(0,'/Users/mink/Documents/ScottySeat/Application')
-from main import main
+sys.path.insert(0,'../../ScottySeat/Application')
+from main import CV
 
 
 
@@ -28,6 +28,9 @@ distance_threshold = 200
 mapwidth = 800
 mapheight = 500
 persepctiveRatio = 200/490
+started = False
+objmodel = CV()
+
 def get_global_json_dumps_serializer(request):
     room_information = RoomModel.objects.select_for_update().all().filter(roomnumber=request.roomname)[0]
     room_map = {
@@ -92,7 +95,9 @@ def show_map(request):
     now = datetime.now()
     # current_time = now.strftime("%H:%M:%S")
     print("Starting Parsing Time =", now)
-    main()
+    #if not started:
+        #ob
+    objmodel.run()
     my_list = [];
     columns = [] # To store column names
     seatcount = 0
@@ -100,7 +105,7 @@ def show_map(request):
     occupied = 0
     seats = []
     person_or_chair = []
-    with open('/Users/mink/Documents/Scottyseat/b3/scottyseats/data/data.txt') as f:
+    with open('../../Scottyseat/b3/scottyseats/data/data.txt') as f:
         lines = f.readlines()
         for line in lines:
             line = line.strip()
@@ -116,6 +121,7 @@ def show_map(request):
                 # seats.append(temp_seats)
                 person_or_chair.append(object_id)
     print(seats)
+
     available_or_not = [True]*len(seats)
     # calculate distance and availablity
     for j in range(len(seats)):

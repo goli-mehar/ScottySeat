@@ -1,5 +1,5 @@
 "use strict"
-var refreshrate = 1000
+var refreshrate = 10000
 var windowid = 0
 
 var mapwidth = 800
