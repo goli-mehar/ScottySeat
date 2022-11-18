@@ -15,10 +15,13 @@ class CV:
         #argv camera path, model path, output path,
         
         #img = self.camera.read()
+        #ret, frame = cap.read()
 
-        img = cv2.imread('../../ScottySeat/Testing Images/IMG_4575 Large.jpeg')
+        # img = cv2.imread('../../ScottySeat/Testing Images/IMG_4575 Large.jpeg')
+        img = cv2.imread('../../ScottySeat/Testing Images/123.jpeg')
         img = preprocess(img)
         out = self.model(img)
+        # out.show()
 
         results = out.pandas().xyxy[0].values
 
@@ -32,15 +35,17 @@ class CV:
 
         with open('../../ScottySeat/b3/scottyseats/data/data.txt', 'w') as f:
             for a in results:
+                w = (float(a[2])/height) - (float(a[0])/height)
+                h = (float(a[3])/width) - (float(a[1])/width)
                 f.write(str(a[-2]))
                 f.write(str(' '))
-                f.write(str(float(a[0])/height))
+                f.write(str((float(a[0])/height) + w/2))
                 f.write(str(' '))
-                f.write(str(float(a[1])/width))
+                f.write(str((float(a[1])/width) + h/2))
                 f.write(str(' '))
-                f.write(str(float(a[2])/height))
+                f.write(str(w))
                 f.write(str(' '))
-                f.write(str(float(a[3])/width))
+                f.write(str(h))
                 f.write(str('\n'))
 
 
