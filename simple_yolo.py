@@ -2,6 +2,7 @@
 #Adapted from https://github.com/amirhosseinh77/JetsonYolo/blob/main/JetsonYolo.py
 
 import cv2
+import torch
 
 window_title = "YOLO_frames"
 
@@ -15,7 +16,6 @@ pipeline = " ! ".join(["v4l2src device=/dev/video0",
 
 def yolo_loop():
 
-    video_capture = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
 
     if video_capture.isOpened():
         try:
@@ -25,17 +25,19 @@ def yolo_loop():
                 ret_val, frame = video_capture.read()
                 if ret_val:
                     # detection process
-                    objs = Object_detector.detect(frame)
-
+                    results = model(frame) 
+                    pd_results = results.pandas().xyxy[0]
+                    print(pd_results)
                     # plotting
-                    for obj in objs:
+                    for index,row in pd_results.iterrows():
                         # print(obj)
-                        label = obj['label']
-                        score = obj['score']
-                        [(xmin,ymin),(xmax,ymax)] = obj['bbox']
-                        color = Object_colors[Object_classes.index(label)]
-                        frame = cv2.rectangle(frame, (xmin,ymin), (xmax,ymax), color, 2) 
-                        frame = cv2.putText(frame, f'{label} ({str(score)})', (xmin,ymin), cv2.FONT_HERSHEY_SIMPLEX , 0.75, color, 1, cv2.LINE_AA)
+                        label = row['name']
+                        score = row['confidence']
+                        print(row['xmin'])
+                        #[(xmin,ymin),(xmax,ymax)] = obj['bbox']
+                        #color = Object_colors[Object_classes.index(label)]
+                        frame = cv2.rectangle(frame, (int(row['xmin']),int(row['ymin'])), (int(row['xmax']),int(row['ymax'])), (255,0,0), 2) 
+                        frame = cv2.putText(frame, f'{label} ({str(score)})', (int(row['xmin']),int(row['ymin'])), cv2.FONT_HERSHEY_SIMPLEX , 0.75, (255,0,0), 1, cv2.LINE_AA)
 
                 # Check to see if the user closed the window
                 # Under GTK+ (Jetson Default), WND_PROP_VISIBLE does not work correctly. Under Qt it does
@@ -57,6 +59,8 @@ def yolo_loop():
 
 
 if __name__ == "__main__":
-
+    model = torch.hub.load('ultralytics/yolov5', 'yolov5l')
+    camera_id = "/dev/video0"
+    video_capture = cv2.VideoCapture(camera_id, cv2.CAP_V4L2)
     yolo_loop()
 
