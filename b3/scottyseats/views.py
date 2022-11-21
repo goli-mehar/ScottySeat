@@ -115,6 +115,7 @@ def show_map(request):
     person_or_chair = []
     tables = []
     seatts_in_tables = []
+    roomlist = []
     with open('../../Scottyseat/b3/scottyseats/data/data.txt') as f:
         lines = f.readlines()
         # for line in lines:
@@ -200,6 +201,7 @@ def show_map(request):
     #     peopleposition = models.TextField()
     #     occupancy = models.TextField()
     room_map = {
+        'roomname: "wean1101"'
         'seatscount': seatcount,
         'personscount': personcount,
         'seatsposition': seats,
@@ -212,11 +214,13 @@ def show_map(request):
         'tablesposition':tables,
         'tablecount':len(tables),
     }
-    allthe = {'room':room_map}
+    roomlist.append(room_map)
+    allthe = {'room':roomlist}
     global lastresponse
     lastresponse = allthe
-    response_json = json.dumps(room_map)
-    print(room_map)
+    response_json = json.dumps(allthe)
+
+    # response_json = json.dumps(room_map)
     print(room_map)
     response = HttpResponse(response_json, content_type='application/json')
     response['Access-Control-Allow-Origin'] = '*'

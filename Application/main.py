@@ -17,8 +17,7 @@ class CV:
         #img = self.camera.read()
         #ret, frame = cap.read()
 
-        # img = cv2.imread('../../ScottySeat/Testing Images/IMG_4575 Large.jpeg')
-        img = cv2.imread('../../ScottySeat/Testing Images/123.jpeg')
+        img = cv2.imread('../../ScottySeat/Testing Images/IMG_4575 Large.jpeg')
         img = preprocess(img)
         out = self.model(img)
         # out.show()
