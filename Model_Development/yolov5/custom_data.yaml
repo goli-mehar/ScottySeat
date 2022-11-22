@@ -1,3 +1,4 @@
+path: /home/ubuntu/ScottySeat/Model_Development/training_data/Scotty
 train: ../train/images
 val: ../valid/images
 test: ../test/images
