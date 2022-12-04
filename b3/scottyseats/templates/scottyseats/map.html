@@ -12,15 +12,15 @@
                 <div id = "occupied" class="big-heading_no_spacing">Occupied : ...</div>
             </div>
         </div>
-        <div class="container">
-            <ul id="roomlist" class="roomlist">Wean 1101</ul>
+        <div class="container" id = "roomlist">
+            <!-- <ul id="roomlist" class="roomlist"></ul> -->
         </div>
     </div>
     <span id="error" class="error"></span>
     <script>
         var MoveURL = "{% url 'showmap' %}"
         var roomname = "wean1101"
-        window.onload = initialize;
+        // window.onload = initialize;
     </script>
 {% endblock %}
 

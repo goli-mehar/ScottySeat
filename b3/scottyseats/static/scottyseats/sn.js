@@ -17,8 +17,8 @@ function initialize() {
     header.style.width = mapwidth + "px"
     let footer = document.getElementById("footer")
     footer.style.width = mapwidth + "px"
-    sendRoomRequest(event)
-    windowid = window.setInterval(sendRoomRequest, refreshrate, event)
+    // sendRoomRequest(event)
+    // windowid = window.setInterval(sendRoomRequest, refreshrate, event)
 }
 
 function sendRoomRequest(event) {
@@ -46,7 +46,9 @@ function sendRoomRequest(event) {
 
 function updateMap(itemlist) {
     for (var j = 0; j < itemlist.room.length; j++){
+        console.log(itemlist.room[j].seatscount)
         let items = itemlist.room[j]
+        let curroom = items.roomname
         let seatscount = items.seatscount
         let seatsposition = items.seatsposition
         let personorchair = items.personorchair
@@ -68,9 +70,16 @@ function updateMap(itemlist) {
         // for (let p = 0; p < nodes.length; p++){
         //     nodes[p].firstChild.removeAttribute("style")
         // }
+        let rooms = document.getElementById("roomlist")
+        while (rooms.hasChildNodes()) {
+            rooms.removeChild(rooms.firstChild)
+        }
         while (map.hasChildNodes()) {
             map.removeChild(map.firstChild)
         }
+        let roominfo = document.createElement("UL")
+        roominfo.innerHTML = curroom
+        rooms.appendChild(roominfo)
         document.getElementById("occupied").innerHTML = 'Occupied : ' + '<span style="color:' + occupied_color + '">' + occupied + '</span>'
         document.getElementById("available").innerHTML = 'Available : ' + '<span style="color:' + available_color + '">' + available + '</span>'
         console.log(seatsposition)
@@ -91,7 +100,9 @@ function updateMap(itemlist) {
             element.style.width = tables[i][3] + 'px'
             map.appendChild(element)
         }
+        console.log(seatscount + peoplecount - 1)
         for (let i = seatscount + peoplecount - 1; i >= 0; i--){
+            console.log(i)
             let ob = personorchair[i]
             // w = seatsposition[i]
             // h = seatsposition[i]
