@@ -1,51 +1,41 @@
-import cv2, torch,time, sys
-import numpy as np
-from preprocess_image import preprocess
+from cv_class import *
 
-sys.path.append("../../ScottySeat/Model_Development/yolov5")
+def main():
 
-class CV:
+    print("Creating new CV engine instance using roomconf file")
+    cv_engine = CV()
 
-    def __init__(self, camera_path=''):
-        self.model = torch.hub.load('ultralytics/yolov5', 'yolov5l')
-        self.camera = camera = cv2.VideoCapture(camera_path, cv2.CAP_AVFOUNDATION)
+    print("Engine successfully created")
 
-    def run(self):
+    b = False
+    while True:
 
-        #argv camera path, model path, output path,
+        img = cv_engine.camera.read()[1][..., ::-1] #Read in new image
+        img = cv_engine.preprocess(img) #Preprocess image
+        out = cv_engine.model(img, size=640) #Run image through model
+        bboxes = cv_engine.convert_xyxytoxywh(out, img.shape) #convert bbox dim
         
-        #img = self.camera.read()
-        #ret, frame = cap.read()
+        cv_engine.samples += [bboxes] #Add to temporary sample list
 
-        img = cv2.imread('../../ScottySeat/Testing Images/IMG_4575 Large.jpeg')
-        img = preprocess(img)
-        out = self.model(img)
-        # out.show()
+        #Once we reach samples required for an update
+        if len(cv_engine.samples) >= CV.SAMPLES_PER_UPDATE:
+            print(bboxes)
 
-        results = out.pandas().xyxy[0].values
+            #threshold images for confidence and correct perspective
+            #bboxes = cv_engine.get_highest_confidence_image()
+            #bboxes = cv_engine.correct_perspective(bboxes)
 
-        results_chairs = [res for res in results if res[-1] == 'chair']
-        results_people = [res for res in results if res[-1] == 'person']
-        results_table = [res for res in results if res[-1] == 'dining table']
-    
-        #np.savetxt(results_chairs)
-        width, height = img.shape
-        results = results_chairs + results_people + results_table
+            #calculate occupancy and send to server
+            occupancy = cv_engine.calculate_occupancy(bboxes)
+            print(occupancy)
+            cv_engine.send_to_server(occupancy)
 
-        with open('../../ScottySeat/b3/scottyseats/data/data.txt', 'w') as f:
-            for a in results:
-                w = (float(a[2])/height) - (float(a[0])/height)
-                h = (float(a[3])/width) - (float(a[1])/width)
-                f.write(str(a[-2]))
-                f.write(str(' '))
-                f.write(str((float(a[0])/height) + w/2))
-                f.write(str(' '))
-                f.write(str((float(a[1])/width) + h/2))
-                f.write(str(' '))
-                f.write(str(w))
-                f.write(str(' '))
-                f.write(str(h))
-                f.write(str('\n'))
+            #reset samples
+            cv_engine.samples = []
+        time.sleep(CV.CYCLE_PERIOD-2)
+
+main()
+
 
 
 
