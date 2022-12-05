@@ -19,17 +19,18 @@ import os
 import math
 from datetime import datetime
 import sys
-sys.path.insert(0,'../../ScottySeat/Application')
-from main import CV
+# sys.path.insert(0,'../../ScottySeat/Application')
+# from main import CV
 
 
 
 distance_threshold = 200
 mapwidth = 800
 mapheight = 500
-persepctiveRatio = 200/490
+persepctiveRatio = 250/490
 started = False
-objmodel = CV()
+# objmodel = CV()
+halfcircleseatratio = 12.5
 
 def get_global_json_dumps_serializer(request):
     room_information = RoomModel.objects.select_for_update().all().filter(roomnumber=request.roomname)[0]
@@ -52,21 +53,28 @@ def get_global_json_dumps_serializer(request):
     return response
 
 def straighten(x, y):
-    divideRatio = 1/2
+    # return [x,y]
+    divideRatio = persepctiveRatio
     offsetRatio = 1/4
     top = 300/mapwidth
-    bottom = 600/mapwidth
+    bottom = 750/mapwidth
+    # divideRatio = 1
+    # offsetRatio = 1
+    # top = 0
+    # bottom = 1
     e = ((1-persepctiveRatio) * mapheight)/2
     mide = (1-divideRatio) * e
     e = ((mapwidth - y)/mapwidth) * e
     f = (mapwidth/(mapwidth - 2*e)) * y
-    if (f >= mapwidth): f = mapwidth
     newf = ((f - top*mapwidth)/((bottom-top)*mapwidth))*mapwidth
-    if (x <= e): return (0, newf)
-    if (x >= (mapheight - e)): return (mapheight, newf)
+    if (newf >= mapwidth): newf = mapwidth
+    if (newf <= 0): newf = 0
     ifmid = -1 if (x >= mapheight/2) else 1
     newx = ((x - e)/(mapheight - 2*e))*mapheight + ifmid * mide * offsetRatio
-    return (newx, newf)
+    if (newx <= e): return (0, newf)
+    if (newx >= (mapheight - e)): return (mapheight, newf)
+    return [newx, newf]
+
 # def straighten(x, y):
 #     e = ((1-persepctiveRatio) * mapheight)/2
 #     e = ((mapwidth - y)/mapwidth) * e
@@ -89,24 +97,91 @@ def straighten(x, y):
 #     if (newx >= mapheight): return (mapheight, f)
 #     return (newx, f)
 
-
 @csrf_exempt 
+def inform(request):
+    # print(request)
+    # print(type((request.body).decode("utf-8")))
+    g_prev = {}
+    request_json = json.loads((request.body).decode("utf-8"))
+    print(request_json)
+    print(type(request_json))
+    print(request_json["Room"])
+    with open("../../ScottySeat/b3/scottyseats/data/data.json", "r") as g:
+        content = g.read()
+        g_prev = json.loads(content)
+        g_prev[request_json["Room"]] = request_json["Results"]
+    with open('../../ScottySeat/b3/scottyseats/data/data.json', 'w') as f:
+        f.write(json.dumps(g_prev))
+    # with open('../../ScottySeat/b3/scottyseats/data/data.json', 'w') as f:
+    #     f.write(json.dumps(request_json))
+
+
+
+
+
+
+
+    asd = {"asd": 'asdasdasdasdasdasdasda',}
+    response_json = json.dumps(asd)
+    # response_json = json.dumps(room_map)
+    response = HttpResponse(response_json, content_type='application/json')
+    response['Access-Control-Allow-Origin'] = '*'
+    # current_time1 = now.strftime("%H:%M:%S")
+    return response
+@csrf_exempt
 def show_map(request):
+    # print(request)
     now = datetime.now()
     # current_time = now.strftime("%H:%M:%S")
     print("Starting Parsing Time =", now)
     #if not started:
         #ob
-    objmodel.run()
-    my_list = [];
+
+    g_prev = {}
+    with open("../../ScottySeat/b3/scottyseats/data/data.json", "r") as g:
+        content = g.read()
+        g_prev = json.loads(content)
+    response_json = json.dumps(g_prev)
+    response = HttpResponse(response_json, content_type='application/json')
+    response['Access-Control-Allow-Origin'] = '*'
+    return response
+
+
+
+    # objmodel.run()
+    my_list = []
     columns = [] # To store column names
     seatcount = 0
     personcount = 0
     occupied = 0
     seats = []
     person_or_chair = []
+    tables = []
+    seatts_in_tables = []
+    roomlist = []
+
+    # with open("../../ScottySeat/b3/scottyseats/data/data.json", "r") as g:
+    #     # print(g.read())
+    #     # print(type(g))
+    #     # print(type(g.read()))
+    #     content = g.read()
+    #     content_json = json.loads(content)
+    #     print(content_json)
+    #     print(content)
+    #     print(type(content_json))
+    #     print(type(content))
+    #     print(json.loads(content))
+    #     print(g.read())
+    #     print(type(g.read()))
+        # print(json.loads(g.read()))
+
+
+
     with open('../../Scottyseat/b3/scottyseats/data/data.txt') as f:
         lines = f.readlines()
+        # for line in lines:
+        #     line = line.strip()
+        #     temp_seats = line.split(' ')[1:3]
         for line in lines:
             line = line.strip()
             object_id = line.split(' ')[0]
@@ -120,7 +195,21 @@ def show_map(request):
                 # seats.append((float(temp_seats[0])*mapheight, float(temp_seats[1])*mapwidth))
                 # seats.append(temp_seats)
                 person_or_chair.append(object_id)
-    print(seats)
+            if object_id == '60':
+                # print(line)
+                temp_tables = line.split(' ')[1:3]
+                four_corners = []
+                table_width = line.split(' ')[3]
+                table_height = line.split(' ')[4]
+                table_left_bottom = straighten((float(temp_tables[0]) - float(table_width)/2)*mapheight, (float(temp_tables[1]) + float(table_height)/2)*mapwidth)
+                table_right_top = straighten((float(temp_tables[0]) + float(table_width)/2)*mapheight, (float(temp_tables[1]) - float(table_height)/2)*mapwidth)
+                # table_adjust_for_left_bottom = straighten((float(temp_tables[0]) + float(table_width)/2)*mapheight, (float(temp_tables[1]) - float(table_height)/2)*mapwidth)
+                table_adjust_for_left_bottom = straighten((float(temp_tables[0]) + float(table_width)/2)*mapheight, (float(temp_tables[1]) + float(table_height)/2)*mapwidth)
+                # table_center = straighten(float(temp_tables[0])*mapheight, float(temp_tables[1])*mapwidth)
+                # print(table_left_bottom)
+                # print(table_right_top)
+                tables.append((table_left_bottom[0], table_left_bottom[1], table_adjust_for_left_bottom[0] - table_left_bottom[0], table_left_bottom[1] - table_right_top[1]))
+    # print(seats)
 
     available_or_not = [True]*len(seats)
     # calculate distance and availablity
@@ -138,31 +227,65 @@ def show_map(request):
             if closest_chair_distance <= distance_threshold:
                 available_or_not[closest_chair_index] = False
                 occupied += 1
-            print(closest_chair_distance)
+            # print(closest_chair_distance)
         else:
-        	seatcount += 1
-    print(available_or_not)
+            #check if the seat is in a table
+            seatcount += 1
+    for t in tables:
+        in_the_table = []
+        lowest_y = 0
+        highest_y = float(math.inf)
+        lowest_x = 0
+        highest_x = float(math.inf)
+        for s in range(len(seats)):
+            if person_or_chair[s] == '56':
+                if seats[s][0] > t[0] and seats[s][0] < (t[2] + t[0]) and seats[s][1] < t[1] and seats[s][1] > (t[1] - t[-1]):
+                    indexes = [seats[s][0] - t[0], (t[2] + t[0]) - seats[s][0],  t[1] - seats[s][1], seats[s][1] - (t[1] - t[-1])]
+                    bounding = [t[0], (t[2] + t[0]), t[1], (t[1] - t[-1])]
+                    minindice = indexes.index(min(indexes))
+                    if minindice < 2:
+                        seats[s][0] = bounding[minindice]
+                    else:
+                        seats[s][1] = bounding[minindice]
+    # new_item = RoomModel(roomname='defaultroom', tablecount=len(tables), tablesposition=tables, seatsposition=seats, seatscount=seatscount, tablesposition=tables, peoplecount = personcount, occupancy = available_or_not, w = mapwidth, h = mapheight)
+    #     roomname     = models.CharField(max_length=15)
+    #     tablecount = models.IntegerField()
+    #     seatscount = models.IntegerField()
+    #     seatsposition = models.TextField()
+    #     tablesposition = models.TextField()
+    #     peoplecount = models.IntegerField()
+    #     peopleposition = models.TextField()
+    #     occupancy = models.TextField()
     room_map = {
+        "roomname": 'wean1101',
         'seatscount': seatcount,
         'personscount': personcount,
         'seatsposition': seats,
-        'personorchair':person_or_chair,
+        'personorchair':person_or_chair,#labels of the items, 
+        #it's named personorchair because its named before we had a table
         'occupancy':available_or_not,
         'occupied': occupied,
         'available' : seatcount - occupied,
         'w':mapwidth,
+        #given the mapwidth and height by the server so that the map will re-adjust
+        # every update even if the user tried to change it on the client side
         'h':mapheight,
+        'tablesposition':tables,
+        'tablecount':len(tables),
     }
-    # allthe = {'room':room_map}
-    # global lastresponse
-    # lastresponse = allthe
-    response_json = json.dumps(room_map)
+    roomlist.append(room_map)
+    allthe = {'room':roomlist}
+    global lastresponse
+    lastresponse = allthe
+    response_json = json.dumps(allthe)
+    # response_json = json.dumps(room_map)
     # print(room_map)
     response = HttpResponse(response_json, content_type='application/json')
     response['Access-Control-Allow-Origin'] = '*'
     now1 = datetime.now()
     # current_time1 = now.strftime("%H:%M:%S")
     print("End Parsing Time =", now1)
+
     return response
 
 def mainmap(request):

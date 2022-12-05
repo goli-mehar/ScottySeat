@@ -1,0 +1,238 @@
+names:
+- Backpack
+- Person
+- Chair
+- Table
+- Desk
+- Office building
+- Footwear
+- Fedora
+- Picture frame
+- Human face
+- Dairy Product
+- Cake
+- Pastry
+- Tie
+- Suit
+- Shotgun
+- Helmet
+- Curtain
+- Human arm
+- Vehicle
+- Tree
+- Shirt
+- Human ear
+- Human head
+- Toy
+- Building
+- Book
+- Human body
+- Handbag
+- Human hand
+- Window
+- Mammal
+- Plant
+- Trousers
+- Wine
+- Wine glass
+- Home appliance
+- Laptop
+- Computer keyboard
+- Printer
+- Cabinetry
+- Computer monitor
+- Office supplies
+- House
+- Chest of drawers
+- Cupboard
+- Drawer
+- Shelf
+- Coffee cup
+- Coffee table
+- Countertop
+- Microwave oven
+- Football
+- Sports uniform
+- Tower
+- Swimwear
+- Skyscraper
+- Sunglasses
+- Shorts
+- Truck
+- Wheel
+- Van
+- Poster
+- Jeans
+- Television
+- Clothing
+- Car
+- Rifle
+- Jacket
+- Airplane
+- Guitar
+- Violin
+- Drum
+- Microphone
+- Train
+- Beer
+- Cocktail
+- Mobile phone
+- Furniture
+- Human eye
+- Human hair
+- Musical instrument
+- Human leg
+- Man
+- Adhesive tape
+- Cosmetics
+- Flag
+- Glasses
+- Hat
+- Traffic light
+- Bus
+- Street light
+- Human foot
+- Food
+- Gas stove
+- Tableware
+- Kitchen appliance
+- Stretcher
+- Sculpture
+- Couch
+- Stool
+- Coat
+- Door
+- Sombrero
+- Waste container
+- Doll
+- Miniskirt
+- Baseball bat
+- Hiking equipment
+- Land vehicle
+- Human mouth
+- Tent
+- Surfboard
+- Human nose
+- Woman
+- Dog
+- Bench
+- Saucer
+- Plate
+- Spoon
+- Fork
+- Sun hat
+- Skirt
+- Balloon
+- Bicycle
+- Bicycle wheel
+- Bicycle helmet
+- Whiteboard
+- Umbrella
+- Christmas tree
+- Paddle
+- Canoe
+- Dress
+- Drink
+- Bookcase
+- Bottle
+- Kitchen & dining room table
+- Camera
+- Tin can
+- Brassiere
+- Bronze sculpture
+- Traffic sign
+- Girl
+- Horse
+- Boy
+- Kitchen utensil
+- Human beard
+- Cowboy hat
+- Parachute
+- Organ (Musical Instrument)
+- Bull
+- Juice
+- Ball
+- Pumpkin
+- Squash (Plant)
+- Fruit
+- Cattle
+- Motorcycle
+- Auto part
+- Sports equipment
+- Fast food
+- Ostrich
+- Boat
+- Weapon
+- Segway
+- Lobster
+- Crab
+- Swim cap
+- Bed
+- Animal
+- Table tennis racket
+- Tire
+- Tank
+- Boot
+- Wheelchair
+- Aircraft
+- Carnivore
+- Fashion accessory
+- Volleyball (Ball)
+- Taco
+- Flute
+- Swimming pool
+- Musical keyboard
+- Piano
+- French horn
+- Trombone
+- Trumpet
+- Skateboard
+- Nightstand
+- Tool
+- Oven
+- Snack
+- Vehicle registration plate
+- Roller skates
+- Seafood
+- Invertebrate
+- Football helmet
+- Refrigerator
+- Goggles
+- Mule
+- Sandal
+- Sewing machine
+- Watercraft
+- Convenience store
+- Ski
+- Golf cart
+- Candy
+- Billiard table
+- Pillow
+- Sofa bed
+- Studio couch
+- Vegetable
+- Baked goods
+- Jet ski
+- Carrot
+- Castle
+- Houseplant
+- Personal flotation device
+- Flower
+- Cart
+- Helicopter
+- Parrot
+- Medical equipment
+- Cat
+- Fish
+- High heels
+- Dinosaur
+- Skull
+- Racket
+- Snowboard
+- Wine rack
+- Loveseat
+- Cello
+- Watch
+nc: 234
+path: /home/ubuntu/ScottySeat/Model_Development/yolov5/data/OpenImages/group1
+val: ./images/val/

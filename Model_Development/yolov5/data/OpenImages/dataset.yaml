@@ -1,0 +1,374 @@
+path: ../data/OpenImages
+
+
+names:
+- Backpack
+- Person
+- Chair
+- Table
+- Desk
+- Office building
+- Footwear
+- Fedora
+- Picture frame
+- Human face
+- Dairy Product
+- Cake
+- Pastry
+- Tie
+- Suit
+- Shotgun
+- Helmet
+- Curtain
+- Human arm
+- Vehicle
+- Tree
+- Shirt
+- Human ear
+- Human head
+- Toy
+- Building
+- Book
+- Human body
+- Handbag
+- Human hand
+- Window
+- Mammal
+- Plant
+- Trousers
+- Wine
+- Wine glass
+- Home appliance
+- Laptop
+- Computer keyboard
+- Printer
+- Cabinetry
+- Computer monitor
+- Office supplies
+- House
+- Chest of drawers
+- Cupboard
+- Drawer
+- Shelf
+- Coffee cup
+- Coffee table
+- Countertop
+- Microwave oven
+- Football
+- Sports uniform
+- Tower
+- Swimwear
+- Skyscraper
+- Sunglasses
+- Shorts
+- Truck
+- Wheel
+- Van
+- Poster
+- Jeans
+- Television
+- Clothing
+- Car
+- Rifle
+- Jacket
+- Airplane
+- Guitar
+- Violin
+- Drum
+- Microphone
+- Train
+- Beer
+- Cocktail
+- Mobile phone
+- Furniture
+- Human eye
+- Human hair
+- Musical instrument
+- Human leg
+- Man
+- Adhesive tape
+- Cosmetics
+- Flag
+- Glasses
+- Hat
+- Traffic light
+- Bus
+- Street light
+- Human foot
+- Food
+- Gas stove
+- Tableware
+- Kitchen appliance
+- Stretcher
+- Sculpture
+- Couch
+- Stool
+- Coat
+- Door
+- Sombrero
+- Waste container
+- Doll
+- Miniskirt
+- Baseball bat
+- Hiking equipment
+- Land vehicle
+- Human mouth
+- Tent
+- Surfboard
+- Human nose
+- Woman
+- Dog
+- Bench
+- Saucer
+- Plate
+- Spoon
+- Fork
+- Sun hat
+- Skirt
+- Balloon
+- Bicycle
+- Bicycle wheel
+- Bicycle helmet
+- Whiteboard
+- Umbrella
+- Christmas tree
+- Paddle
+- Canoe
+- Dress
+- Drink
+- Bookcase
+- Bottle
+- Kitchen & dining room table
+- Camera
+- Tin can
+- Brassiere
+- Bronze sculpture
+- Traffic sign
+- Girl
+- Horse
+- Boy
+- Kitchen utensil
+- Human beard
+- Cowboy hat
+- Parachute
+- Organ (Musical Instrument)
+- Bull
+- Juice
+- Houseplant
+- Flowerpot
+- Tap
+- Bathtub
+- Glove
+- Sports equipment
+- Vehicle registration plate
+- Taxi
+- Fountain
+- Flower
+- Piano
+- Boat
+- Motorcycle
+- Barrel
+- Weapon
+- Lamp
+- Light bulb
+- Mug
+- Scarf
+- Fruit
+- Pumpkin
+- Stairs
+- Goggles
+- Lighthouse
+- Ball
+- Bowling equipment
+- Snowboard
+- Swimming pool
+- Pig
+- Insect
+- Spider
+- Sushi
+- Sock
+- Watercraft
+- Tortoise
+- Marine mammal
+- Lantern
+- Snack
+- Plastic bag
+- Clock
+- Watch
+- Mule
+- Billboard
+- Football helmet
+- Palm tree
+- Box
+- Sofa bed
+- Cat
+- Tire
+- Animal
+- Fast food
+- Cheese
+- Hamburger
+- Balance beam
+- Candy
+- Gondola
+- Nightstand
+- Pillow
+- Bed
+- Luggage and bags
+- Wheelchair
+- Studio couch
+- Fireplace
+- Wood-burning stove
+- Cucumber
+- Zucchini
+- Golf ball
+- Dinosaur
+- Candle
+- Bread
+- Sandwich
+- Computer mouse
+- Tablet computer
+- Pen
+- Cart
+- Limousine
+- Rabbit
+- Fish
+- Jacuzzi
+- Baseball glove
+- Porch
+- Cattle
+- Ladder
+- Mirror
+- Crown
+- Skull
+- Sandal
+- High heels
+- Washing machine
+- Musical keyboard
+- Auto part
+- Coffee
+- Necklace
+- Mechanical fan
+- Ceiling fan
+- Fashion accessory
+- Headphones
+- Tripod
+- Tool
+- Tea
+- Platter
+- Bird
+- Convenience store
+- Suitcase
+- Filing cabinet
+- Tree house
+- Bust
+- Billiard table
+- Accordion
+- Window blind
+- Corded phone
+- Cello
+- Oven
+- Vase
+- Common sunflower
+- Squash (Plant)
+- Ostrich
+- Segway
+- Lobster
+- Crab
+- Swim cap
+- Table tennis racket
+- Tank
+- Boot
+- Aircraft
+- Carnivore
+- Volleyball (Ball)
+- Taco
+- Flute
+- French horn
+- Trombone
+- Trumpet
+- Skateboard
+- Roller skates
+- Seafood
+- Invertebrate
+- Refrigerator
+- Sewing machine
+- Ski
+- Golf cart
+- Vegetable
+- Harpsichord
+- Helicopter
+- Medical equipment
+- Cannon
+- Drill (Tool)
+- Saxophone
+- Guacamole
+- Sink
+- Food processor
+- Mixer
+- Infant bed
+- Kettle
+- Dolphin
+- Racket
+- Harp
+- Owl
+- Bow and arrow
+- Snowplow
+- Rose
+- Unicycle
+- Dessert
+- Dumbbell
+- Baked goods
+- Lipstick
+- Honeycomb
+- Beehive
+- Bee
+- Grape
+- Pretzel
+- Watermelon
+- Jet ski
+- Oboe
+- Loveseat
+- Ambulance
+- Bathroom cabinet
+- Hot dog
+- Personal flotation device
+- Closet
+- Carrot
+- Castle
+- Parrot
+- Wine rack
+- Bear
+- Teddy bear
+- Chopsticks
+- Cookie
+- Wok
+- Kite
+- Bowl
+- Mixing bowl
+- Strawberry
+- Fire hydrant
+- Sea turtle
+- Reptile
+- Teapot
+- Tennis ball
+- Tennis racket
+- Plumbing fixture
+- Banjo
+- Ipod
+- Panda
+- Scoreboard
+- Flying disc
+- Treadmill
+- Burrito
+- Cabbage
+- Cake stand
+- Shark
+- Snowman
+- Sheep
+- Pitcher (Container)
+- Jug
+- Oyster
+- Salad
+nc: 367
+path: /home/ubuntu/ScottySeat/Model_Development/yolov5/data/OpenImages
+val: ./images/val/

@@ -1,52 +1,40 @@
-import cv2, torch,time, sys
-import numpy as np
-from preprocess_image import preprocess
+from cv_class import *
 
-class CV:
+def main():
 
-    def __init__(self, camera_path=''):
-        self.model = torch.hub.load('ultralytics/yolov5', 'yolov5l')
-        self.camera = cv2.VideoCapture(1, cv2.CAP_AVFOUNDATION)
+    print("Creating new CV engine instance using roomconf file")
+    cv_engine = CV()
 
-    def run(self):
+    print("Engine successfully created")
 
-        #argv camera path, model path, output path,
+    b = False
+    while True:
+
+        img = cv_engine.camera.read()[1][..., ::-1] #Read in new image
+        img = cv_engine.preprocess(img) #Preprocess image
+        out = cv_engine.model(img, size=640) #Run image through model
+        bboxes = cv_engine.convert_xyxytoxywh(out, img.shape) #convert bbox dim
         
-        #img = self.camera.read()
+        cv_engine.samples += [bboxes] #Add to temporary sample list
 
-        img = cv2.imread('../../ScottySeat/Testing Images/IMG_4575 Large.jpeg')
-        img = preprocess(img)
-        out = self.model(img)
+        #Once we reach samples required for an update
+        if len(cv_engine.samples) >= CV.SAMPLES_PER_UPDATE:
+            print(bboxes)
 
-        results = out.pandas().xyxy[0].values
+            #threshold images for confidence and correct perspective
+            #bboxes = cv_engine.get_highest_confidence_image()
+            #bboxes = cv_engine.correct_perspective(bboxes)
 
-        height, width = img.shape
-        results_chairs = [res for res in results if res[-1] == 'chair']
-        results_people = [res for res in results if res[-1] == 'person']
-        results_table = [res for res in results if res[-1] == 'dining table']
-        results = results_chairs + results_people + results_table
+            #calculate occupancy and send to server
+            occupancy = cv_engine.calculate_occupancy(bboxes)
+            print(occupancy)
+            cv_engine.send_to_server(occupancy)
 
-        adj_results = []
-        for obj in results:
-            cl = obj[-2]
-            x1, y1, x2, y2 = obj[0:4]
+            #reset samples
+            cv_engine.samples = []
+        time.sleep(CV.CYCLE_PERIOD-2)
 
-            x_w = np.abs(x2-x1); y_h = np.abs(y2-y1)
-
-            x_c = np.minimum(x1, x2) + x_w/2; y_c = np.minimum(y1, y2) + y_h/2
-
-            x_w /= width; x_c /= width
-            y_c /= height; y_h /= height
-
-            adj_results += [[cl, x_c, y_c, x_w, y_h]]
-
-
-        with open('../../ScottySeat/b3/scottyseats/data/data.txt', 'w') as f:
-            for a in adj_results:
-                line = str(a[0]) + ' ' + str(float(a[1])) + ' ' + str(float(a[2])) \
-                    + ' ' + str(float(a[3])) + ' ' + str(float(a[4])) + '\n'
-                f.write(line)
-
+main()
 
 
 
