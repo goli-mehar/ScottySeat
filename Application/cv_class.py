@@ -14,8 +14,8 @@ class CV:
     THR_SAMPLES = 5 #How many images to threshold from after confidence
 
     def __init__(self):
-        self.mapwidth = 800
-        self.mapheight = 500
+        self.mapwidth = 480
+        self.mapheight = 640
         self.persepctiveRatio = 250/490
         self.model = torch.hub.load('../Model_Development/yolov5', 'custom', path='model_weights.pt', source='local', force_reload=True)
         self.samples = []
@@ -77,14 +77,15 @@ class CV:
         return self.samples[0]
 
     def straighten(self, x, y):
+        return [x,y]
         divideRatio = self.persepctiveRatio
         offsetRatio = 1/4
-        top = 300/self.mapwidth
-        bottom = 750/self.mapwidth
+        # top = 300/self.mapwidth
+        # bottom = 750/self.mapwidth
         # divideRatio = 1
         # offsetRatio = 1
-        # top = 0
-        # bottom = 1
+        top = 0
+        bottom = 1
         e = ((1-self.persepctiveRatio) * self.mapheight)/2
         mide = (1-divideRatio) * e
         e = ((self.mapwidth - y)/self.mapwidth) * e
@@ -111,7 +112,7 @@ class CV:
         roomlist = []
         for obj in sample:
             object_id = obj[0]
-            if object_id == '2' or object_id == '0':
+            if object_id == 2 or object_id == 0:
                 temp_seats = obj[1:3]
                 # print(temp_seats)
                 # print(self.straighten(float(temp_seats[0])*self.mapheight, float(temp_seats[1]))*self.mapwidth)
@@ -119,7 +120,7 @@ class CV:
                 # seats.append((float(temp_seats[0])*self.mapheight, float(temp_seats[1])*self.mapwidth))
                 # seats.append(temp_seats)
                 person_or_chair.append(object_id)
-            if object_id == '1':
+            if object_id == 1:
                 # print(line)
                 temp_tables = obj[1:3]
                 four_corners = []
@@ -137,19 +138,19 @@ class CV:
         available_or_not = [True]*len(seats)
         # calculate distance and availablity
         for j in range(len(seats)):
-            if person_or_chair[j] == '0':
+            if person_or_chair[j] == 2:
                 personcount += 1
                 closest_chair_index = -1
                 closest_chair_distance = float(math.inf)
                 for k in range(len(seats)):
-                    if person_or_chair[k] == '56' and available_or_not[k]:
+                    if person_or_chair[k] == 0 and available_or_not[k]:
                         distance = math.hypot(float(seats[k][0]) - float(seats[j][0]), float(seats[k][1]) - float(seats[j][1]))
                         if distance < closest_chair_distance:
                             closest_chair_distance = distance
                             closest_chair_index = k
-                if closest_chair_distance <= distance_threshold:
-                    available_or_not[closest_chair_index] = False
-                    occupied += 1
+                #if closest_chair_distance <= distance_threshold:
+                available_or_not[closest_chair_index] = False
+                occupied += 1
                 # print(closest_chair_distance)
             else:
                 #check if the seat is in a table
@@ -161,7 +162,7 @@ class CV:
             lowest_x = 0
             highest_x = float(math.inf)
             for s in range(len(seats)):
-                if person_or_chair[s] == '56':
+                if person_or_chair[s] == 0:
                     if seats[s][0] > t[0] and seats[s][0] < (t[2] + t[0]) and seats[s][1] < t[1] and seats[s][1] > (t[1] - t[-1]):
                         indexes = [seats[s][0] - t[0], (t[2] + t[0]) - seats[s][0],  t[1] - seats[s][1], seats[s][1] - (t[1] - t[-1])]
                         bounding = [t[0], (t[2] + t[0]), t[1], (t[1] - t[-1])]
