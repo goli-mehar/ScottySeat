@@ -3,6 +3,7 @@
 
 import cv2
 import torch
+import time
 
 window_title = "YOLO_frames"
 
@@ -12,22 +13,51 @@ pipeline = " ! ".join(["v4l2src device=/dev/video0",
                        "videoconvert",
                        "video/x-raw, format=(string)BGR",
                        "appsink"
+
                        ])
 
+def preprocess(img):
+
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    img = clahe.apply(img)
+
+    #img = cv.convertScaleAbs(img, alpha=alpha, beta=beta)
+    #img = cv.fastNlMeansDenoising(img,None,5,10,7,21)
+
+    return img
+
 def yolo_loop():
-
-
+    
+    total_cap = 0
+    total_img_cap = 0
+    total_infer = 0
+    total_preproc = 0
     if video_capture.isOpened():
         try:
             window_handle = cv2.namedWindow(window_title, cv2.WINDOW_AUTOSIZE)
             # Window
             while True:
+                time_precap = time.time()
                 ret_val, frame = video_capture.read()
                 if ret_val:
+                    print(frame.shape)
+                    time_postcap = time.time()
+                    proc_frame = preprocess(frame)
+                    time_postproc = time.time()
                     # detection process
-                    results = model(frame) 
+                    results = model(proc_frame) 
+                    time_postinfer = time.time()
                     pd_results = results.pandas().xyxy[0]
-                    print(pd_results)
+                    #print(pd_results)
+                    time_img_cap = time_postcap - time_precap
+                    time_preproc = time_postproc - time_postcap
+                    time_infer = time_postinfer - time_postproc
+                    total_cap += 1
+                    print(total_cap)
+                    total_img_cap += time_img_cap
+                    total_infer += time_infer
+                    total_preproc += time_preproc
                     # plotting
                     for index,row in pd_results.iterrows():
                         # print(obj)
@@ -50,16 +80,27 @@ def yolo_loop():
                 # Stop the program on the ESC key or 'q'
                 if keyCode == 27 or keyCode == ord('q'):
                     break
+                if total_cap == 100:
+                    break
 
         finally:
             video_capture.release()
             cv2.destroyAllWindows()
+            f = open("yolo5preproc_res.txt", "a")
+            f.write("Total cap:" + str(total_cap))
+            f.write("Avg image cap time:" + str(total_img_cap/total_cap))
+            f.write("Avg pre proc time:" + str(total_preproc/total_cap))
+            print("Avg image cap time:", total_img_cap/total_cap)
+            print("Avg infer time:", total_infer/total_cap)
+            f.write("Avg infer time:" + str(total_infer/total_cap))
+            f.close()
+            
     else:
         print("Error: Unable to open camera")
 
 
 if __name__ == "__main__":
-    model = torch.hub.load('ultralytics/yolov5', 'yolov5l')
+    model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
     camera_id = "/dev/video0"
     video_capture = cv2.VideoCapture(camera_id, cv2.CAP_V4L2)
     yolo_loop()
