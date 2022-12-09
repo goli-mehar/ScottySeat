@@ -12,6 +12,7 @@ class CV:
     SAMPLES_PER_UPDATE = 5 #How many images will be sampled in each update
     CYCLE_PERIOD = 3 #Time between each image sample
     THR_SAMPLES = 5 #How many images to threshold from after confidence
+    CONF_THRESH = 0.6
 
     def __init__(self):
         self.mapwidth = 480
@@ -28,7 +29,7 @@ class CV:
 
         self.room_name = room_info["Room"]
         self.server_path = room_info["Server Path"]
-        self.camera = cv2.VideoCapture(room_info["Camera Path"], cv2.CAP_AVFOUNDATION)
+        self.camera = cv2.VideoCapture(room_info["Camera Path"], cv2.CAP_V4L2)
 
     def get_room_info(self):
 
@@ -69,12 +70,22 @@ class CV:
         return img
 
     def get_highest_confidence_image(self):
-
+        mean = 0
+        best_sample = None;
+        for i in range(len(self.samples)):
+            sample = self.samples[i];   
+            sample = sample.pandas().xyxy[0]
+            thresh_obj = sample[sample.confidence > 0.6]
+            print(thresh_obj)
+            mean_confidence = thresh_obj['confidence'].mean()
+            if(mean_confidence > mean):
+                mean = mean_confidence
+                best_sample = thresh_obj
 
         #top 5 with highest confidence averges in image
         #take objects with greater than 70% confidence
         #if an object overlaps more than 50% onoy tke the higher confidnece object
-        return self.samples[0]
+        return best_sample
 
     def straighten(self, x, y):
         return [x,y]
@@ -193,7 +204,7 @@ class CV:
 
     def convert_xyxytoxywh(self, sample, img_dim):
 
-        results = sample.pandas().xyxy[0].values
+        results = sample.values
         height, width = img_dim
         results = [res for res in results]
 
