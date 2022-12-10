@@ -1,10 +1,10 @@
 from cv_class import *
-
+import sys
 def main():
-
+    
     print("Creating new CV engine instance using roomconf file")
-    cv_engine = CV()
-
+    roomconf = str(sys.argv[1])
+    cv_engine = CV(roomconf)
     print("Engine successfully created")
 
     b = False
@@ -24,12 +24,10 @@ def main():
             #threshold images for confidence and correct perspective
             bboxes = cv_engine.get_highest_confidence_image()
             bboxes = cv_engine.convert_xyxytoxywh(bboxes, img.shape) #convert bbox dim
-            print(bboxes)
             #bboxes = cv_engine.correct_perspective(bboxes)
 
             #correct perspective and send to server
             occupancy = cv_engine.calculate_occupancy(bboxes)
-            print(occupancy)
             #cv_engine.send_to_server(occupancy)
 
             #reset samples

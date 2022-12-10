@@ -14,15 +14,16 @@ class CV:
     THR_SAMPLES = 5 #How many images to threshold from after confidence
     CONF_THRESH = 0.6
 
-    def __init__(self):
+    def __init__(self, path_to_conf):
         self.mapwidth = 480
         self.mapheight = 640
         self.persepctiveRatio = 250/490
         self.model = torch.hub.load('../Model_Development/yolov5', 'custom', path='model_weights.pt', source='local', force_reload=True)
         self.samples = []
 
+
         try:
-            with open('roomconf.json', 'r') as f:
+            with open(path_to_conf, 'r') as f:
                 room_info = json.loads(f.read())
         except:
             room_info = self.get_room_info()
@@ -76,7 +77,7 @@ class CV:
             sample = self.samples[i];   
             sample = sample.pandas().xyxy[0]
             thresh_obj = sample[sample.confidence > 0.6]
-            print(thresh_obj)
+            # print(thresh_obj)
             mean_confidence = thresh_obj['confidence'].mean()
             if(mean_confidence > mean):
                 mean = mean_confidence
