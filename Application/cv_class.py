@@ -18,7 +18,7 @@ class CV:
         self.mapwidth = 480
         self.mapheight = 640
         self.persepctiveRatio = 400/490
-        self.model = torch.hub.load('../Model_Development/yolov5', 'custom', path='model_weights.pt', source='local', force_reload=True)
+        self.model = torch.hub.load('../Model_Development/yolov5', 'custom', path='Scotty50f10_COCO.pt', source='local', force_reload=True)
         self.samples = []
 
 
@@ -31,6 +31,7 @@ class CV:
         self.room_name = room_info["Room"]
         self.server_path = room_info["Server Path"]
         # self.camera = cv2.VideoCapture(room_info["Camera Path"], cv2.CAP_V4L2)
+        #self.camera = cv2.VideoCapture("/Users/aditiraghavan/Desktop/basic_setup.mov")
 
     def get_room_info(self):
 
@@ -61,31 +62,41 @@ class CV:
 
     def preprocess(self, img):
         
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-        img = clahe.apply(img)
+       # img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+       # clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+       # img = clahe.apply(img)
 
-        #img = cv.convertScaleAbs(img, alpha=alpha, beta=beta)
+        img = cv2.convertScaleAbs(img, alpha=1.25, beta=10)
+        kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+        img= cv2.filter2D(img, -1, kernel)
+        #img = cv2.GaussianBlur(src=img, ksize=(5,5), sigmaX=0, sigmaY=0)
+        #alpha 1.25 beta 10 good
         #img = cv.fastNlMeansDenoising(img,None,5,10,7,21)
 
         return img
 
     def get_highest_confidence_image(self):
         mean = 0
-        best_sample = None;
+        best_sample = None
+        max_chairs = 0
         for i in range(len(self.samples)):
             sample = self.samples[i];   
             sample = sample.pandas().xyxy[0]
-            thresh_obj = sample[sample.confidence > 0.6]
-            # print(thresh_obj)
+            thresh_obj = sample[sample.confidence > 0.5]
+            print(thresh_obj)
             mean_confidence = thresh_obj['confidence'].mean()
-            if(mean_confidence > mean):
+            num_chairs = (thresh_obj['name'] == 'chair').sum()
+            if(num_chairs > max_chairs):
                 mean = mean_confidence
                 best_sample = thresh_obj
+                max_chairs = num_chairs
+                full_sample = self.samples[i]
+            elif(mean_confidence > mean and num_chairs == max_chairs):
+                mean = mean_confidence
+                best_sample = thresh_obj
+                max_chairs = num_chairs
+                full_sample = self.samples[i]
 
-        #top 5 with highest confidence averges in image
-        #take objects with greater than 70% confidence
-        #if an object overlaps more than 50% onoy tke the higher confidnece object
         return best_sample
 
     # def straighten(self, x, y):
