@@ -2,9 +2,15 @@
 
 {% block content %}
     <div class="container-side">
+        <select name="language" id="language" onchange="changeOrder();">
+            <option value="javascript">JavaScript</option>
+            <option value="python">Python</option>
+            <option value="c++">C++</option>
+            <option value="java" selected>Java</option>
+        </select>
         <div class="container">
             <div id="header" class="container_left">
-                <div id = "roomname" class="big-heading_no_spacing_top">Wean 1101</div>
+                <div id = "roomname" class="big-heading_no_spacing_top">...</div>
             </div>
             <div id="game" class = "grid"></div>
             <div id="footer" class="container_right">
@@ -13,13 +19,13 @@
             </div>
         </div>
         <div class="container">
-            <ul id="roomlist" class="roomlist">Wean 1101</ul>
+            <ul id="roomlist" class="roomlist">...</ul>
         </div>
     </div>
     <span id="error" class="error"></span>
     <script>
         var MoveURL = "{% url 'showmap' %}"
-        var roomname = "wean1101"
+        var roomname = "..."
         window.onload = initialize;
     </script>
 {% endblock %}

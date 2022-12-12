@@ -4,7 +4,7 @@
     <div class="container-side">
         <div class="container">
             <div id="header" class="container_left">
-                <div id = "roomname" class="big-heading_no_spacing_top">Wean 1101</div>
+                <div id = "roomname" class="big-heading_no_spacing_top">...</div>
             </div>
             <div id="game" class = "grid"></div>
             <div id="footer" class="container_right">
@@ -12,14 +12,20 @@
                 <div id = "occupied" class="big-heading_no_spacing">Occupied : ...</div>
             </div>
         </div>
-        <div class="container" id = "roomlist">
-            <!-- <ul id="roomlist" class="roomlist"></ul> -->
+        <div class="container" id = "roomlist_large">
+            <select name="order" id="order" onchange="changeOrder();">
+                <option value="available" selected>Number of Available Chairs</option>
+                <option value="tablecount">Number of Tables</option>
+                <option value="seatscount">Number of chairs</option>
+                <option value="occupied">Number of Occupied Chairs</option>
+            </select>
+            <div class="container" id = "roomlist"></div>
         </div>
     </div>
     <span id="error" class="error"></span>
     <script>
         var MoveURL = "{% url 'showmap' %}"
-        var roomname = "wean1101"
+        var roomname = "..."
         window.onload = initialize;
     </script>
 {% endblock %}

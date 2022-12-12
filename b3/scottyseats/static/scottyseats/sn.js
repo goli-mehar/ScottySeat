@@ -8,6 +8,7 @@ var occupied_color = '#914040'
 var available_color = '#409143'
 var persepctiveRatio = 250/490
 var response = {}
+var order = "available"
 
 function initialize() {
     let map = document.getElementById("game")
@@ -33,42 +34,50 @@ function sendRoomRequest(event) {
     xhr.send("roomname="+roomname+"&csrfmiddlewaretoken="+getCSRFToken());
 }
 
-// function straighten(x, y){
-//     let e = ((1-persepctiveRatio) * mapheight)/2
-//     e = ((mapwidth - y)/mapwidth) * e
-//     if (x <= e) return [0, y]
-//     if (x >= (mapheight - e)) return [mapheight, y]
-//     let newx = ((x - e)/(mapheight - 2*e))*mapheight
-//     let f = (mapwidth/(mapwidth - 2*e)) * y
-//     if (f >= mapwidth) f = mapwidth
-//     return [newx, f]
-// }
+function changeOrder() {
+    order = document.getElementById("order").value
+    console.log(order)
+    updateRoom(response)
+}
 function updateRoom(itemlist) {
     console.log(itemlist)
-    let rooms = document.getElementById("roomlist")
-    let initialized = false
+    let rooms = document.getElementById("roomlist");
+    let initialized = false;
+    let temp_list = [];
     while (rooms.hasChildNodes()) {
-        rooms.removeChild(rooms.firstChild)
+        rooms.removeChild(rooms.firstChild);
     }
     for (let room in itemlist) {
-        if (room == roomname){
-            initialized = true
+        temp_list.push(room)
+    }
+    console.log(temp_list)
+    temp_list.sort(function(a,b){
+        if (itemlist[a][order] > itemlist[b][order]){
+            return -1;
         }
-        console.log(room)
-        console.log(itemlist[room]);
+        if (itemlist[a][order] < itemlist[b][order]){
+            return 1;
+        }
+        return 0;
+    });
+    console.log(itemlist)
+    console.log(temp_list)
+    for (var i = 0; i < temp_list.length; i++) {
+        if (temp_list[i] == roomname){
+            initialized = true;
+        }
         let roominfo = document.createElement("UL");
-        roominfo.innerHTML = room;
-        roominfo.id = room
+        roominfo.innerHTML = temp_list[i] + '&nbsp&nbsp&nbsp' + '<span style="color:' + occupied_color + '">' + itemlist[temp_list[i]].occupied + '</span>' + "&nbsp&nbsp&nbsp" + '<span style="color:' + available_color + '">' + itemlist[temp_list[i]].available + '</span>';
+        roominfo.id = temp_list[i];
+        roominfo.className = "roomlist_item"
         roominfo.onclick = function() {changeCurRoom(this.id)};
         rooms.appendChild(roominfo);
     }
+    console.log(temp_list)
     if (!initialized){
-        for (let firstroom in itemlist) {
-            roomname = firstroom
-            let title = document.getElementById("roomname")
-            title.innerHTML = roomname
-            break;
-        }
+        roomname = temp_list[0]
+        let title = document.getElementById("roomname")
+        title.innerHTML = roomname
     }
 
 }
@@ -82,6 +91,7 @@ function changeCurRoom(id) {
 }
 function updateMap(itemlist) {
     // for (var j = 0; j < itemlist.room.length; j++){
+    console.log(roomname)
     console.log(itemlist[roomname])
     let items = itemlist[roomname]
     let seatscount = items.seatscount
