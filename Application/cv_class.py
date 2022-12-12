@@ -30,7 +30,7 @@ class CV:
 
         self.room_name = room_info["Room"]
         self.server_path = room_info["Server Path"]
-        # self.camera = cv2.VideoCapture(room_info["Camera Path"], cv2.CAP_V4L2)
+        self.camera = cv2.VideoCapture(0)
         #self.camera = cv2.VideoCapture("/Users/aditiraghavan/Desktop/basic_setup.mov")
 
     def get_room_info(self):
@@ -66,9 +66,9 @@ class CV:
        # clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
        # img = clahe.apply(img)
 
-        img = cv2.convertScaleAbs(img, alpha=1.25, beta=10)
-        kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
-        img= cv2.filter2D(img, -1, kernel)
+        img = cv2.convertScaleAbs(img, alpha=1.15, beta=10)
+        #kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+        #img= cv2.filter2D(img, -1, kernel)
         #img = cv2.GaussianBlur(src=img, ksize=(5,5), sigmaX=0, sigmaY=0)
         #alpha 1.25 beta 10 good
         #img = cv.fastNlMeansDenoising(img,None,5,10,7,21)
@@ -97,7 +97,7 @@ class CV:
                 max_chairs = num_chairs
                 full_sample = self.samples[i]
 
-        return best_sample
+        return best_sample, full_sample
 
     # def straighten(self, x, y):
     #     return [x,y]
@@ -188,8 +188,12 @@ class CV:
                 # table_center = self.straighten(float(temp_tables[0])*self.mapheight, float(temp_tables[1])*self.mapwidth)
                 # print(table_left_bottom)
                 # print(table_right_top)
-                tables.append((table_left_bottom[0], table_left_bottom[1], table_adjust_for_left_bottom[0] - table_left_bottom[0], table_left_bottom[1] - table_right_top[1]))
-
+                if (len(tables) == 0):
+                    tables.append((table_left_bottom[0], table_left_bottom[1], table_adjust_for_left_bottom[0] - table_left_bottom[0], table_left_bottom[1] - table_right_top[1]))
+                else:
+                    if (table_left_bottom[0] > tables[0][0]):
+                        tables.pop()
+                        tables.append((table_left_bottom[0], table_left_bottom[1], table_adjust_for_left_bottom[0] - table_left_bottom[0], table_left_bottom[1] - table_right_top[1])) 
         available_or_not = [True]*len(seats)
         # calculate distance and availablity
         for j in range(len(seats)):
@@ -254,7 +258,9 @@ class CV:
 
         adj_results = []
         for obj in reversed(results):
+            class_remap = {56:0, 60:1, 0:2, 24:55, 62:56, 63:7}
             cl = obj[-2]
+            cl = class_remap[cl]
             x1, y1, x2, y2 = obj[0:4]
 
             x_w = np.abs(x2-x1); y_h = np.abs(y2-y1)
