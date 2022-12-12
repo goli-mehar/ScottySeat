@@ -17,7 +17,7 @@ class CV:
     def __init__(self, path_to_conf):
         self.mapwidth = 480
         self.mapheight = 640
-        self.persepctiveRatio = 250/490
+        self.persepctiveRatio = 400/490
         self.model = torch.hub.load('../Model_Development/yolov5', 'custom', path='model_weights.pt', source='local', force_reload=True)
         self.samples = []
 
@@ -30,7 +30,7 @@ class CV:
 
         self.room_name = room_info["Room"]
         self.server_path = room_info["Server Path"]
-        self.camera = cv2.VideoCapture(room_info["Camera Path"], cv2.CAP_V4L2)
+        # self.camera = cv2.VideoCapture(room_info["Camera Path"], cv2.CAP_V4L2)
 
     def get_room_info(self):
 
@@ -88,27 +88,59 @@ class CV:
         #if an object overlaps more than 50% onoy tke the higher confidnece object
         return best_sample
 
+    # def straighten(self, x, y):
+    #     return [x,y]
+    #     divideRatio = self.persepctiveRatio
+    #     offsetRatio = 1/4
+    #     # top = 300/self.mapwidth
+    #     # bottom = 750/self.mapwidth
+    #     # divideRatio = 1
+    #     # offsetRatio = 1
+    #     top = 0
+    #     bottom = 1
+    #     e = ((1-self.persepctiveRatio) * self.mapheight)/2
+    #     mide = (1-divideRatio) * e
+    #     e = ((self.mapwidth - y)/self.mapwidth) * e
+    #     f = (self.mapwidth/(self.mapwidth - 2*e)) * y
+    #     newf = ((f - top*self.mapwidth)/((bottom-top)*self.mapwidth))*self.mapwidth
+    #     if (newf >= self.mapwidth): newf = self.mapwidth
+    #     if (newf <= 0): newf = 0
+    #     ifmid = -1 if (x >= self.mapheight/2) else 1
+    #     newx = ((x - e)/(self.mapheight - 2*e))*self.mapheight + ifmid * mide * offsetRatio
+    #     if (newx <= e): return (0, newf)
+    #     if (newx >= (self.mapheight - e)): return (self.mapheight, newf)
+    #     return [newx, newf]
     def straighten(self, x, y):
-        return [x,y]
-        divideRatio = self.persepctiveRatio
-        offsetRatio = 1/4
-        # top = 300/self.mapwidth
-        # bottom = 750/self.mapwidth
+        # return [x,y]
+        divideRatio = 1/(1/self.persepctiveRatio + 1)
+        print(divideRatio)
+        # offsetRatio = 1/4
+        # top = 300/self.mapheight
+        # bottom = 750/self.mapheight
         # divideRatio = 1
-        # offsetRatio = 1
+        offsetRatio = 1
         top = 0
         bottom = 1
-        e = ((1-self.persepctiveRatio) * self.mapheight)/2
-        mide = (1-divideRatio) * e
-        e = ((self.mapwidth - y)/self.mapwidth) * e
-        f = (self.mapwidth/(self.mapwidth - 2*e)) * y
-        newf = ((f - top*self.mapwidth)/((bottom-top)*self.mapwidth))*self.mapwidth
-        if (newf >= self.mapwidth): newf = self.mapwidth
+        e = ((1-self.persepctiveRatio) * self.mapwidth)/2
+        # mide = (1-divideRatio) * e
+        mide = 0
+        e = ((self.mapheight - y)/self.mapheight) * e
+        # f = (self.mapheight/(self.mapheight - 2*e)) * y
+        b = (2 * (divideRatio ** 2) - 1)/((2 * divideRatio) * (divideRatio - 1))
+        print(b)
+        a = (1 - 2 * divideRatio)/((2 * divideRatio) * (divideRatio - 1))
+        print(a)
+        f = a * ((y/self.mapheight) ** 2) + b * (y/self.mapheight)
+        print(f)
+        f = f * self.mapheight
+        print(f)
+        newf = ((f - top*self.mapheight)/((bottom-top)*self.mapheight))*self.mapheight
+        if (newf >= self.mapheight): newf = self.mapheight
         if (newf <= 0): newf = 0
-        ifmid = -1 if (x >= self.mapheight/2) else 1
-        newx = ((x - e)/(self.mapheight - 2*e))*self.mapheight + ifmid * mide * offsetRatio
+        ifmid = -1 if (x >= self.mapwidth/2) else 1
+        newx = ((x - e)/(self.mapwidth - 2*e))*self.mapwidth + ifmid * mide * offsetRatio
         if (newx <= e): return (0, newf)
-        if (newx >= (self.mapheight - e)): return (self.mapheight, newf)
+        if (newx >= (self.mapwidth - e)): return (self.mapwidth, newf)
         return [newx, newf]
 
     def calculate_occupancy(self, sample):
@@ -127,7 +159,7 @@ class CV:
             if object_id == 2 or object_id == 0:
                 temp_seats = obj[1:3]
                 # print(temp_seats)
-                # print(self.straighten(float(temp_seats[0])*self.mapheight, float(temp_seats[1]))*self.mapwidth)
+                # print(self.straighten(float(temp_seats[0])*self.mapheight, float(temp_seats[1]))*self.mapheigh2)
                 seats.append(self.straighten(float(temp_seats[0])*self.mapheight, float(temp_seats[1])*self.mapwidth))
                 # seats.append((float(temp_seats[0])*self.mapheight, float(temp_seats[1])*self.mapwidth))
                 # seats.append(temp_seats)

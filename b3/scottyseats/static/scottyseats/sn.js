@@ -65,6 +65,8 @@ function updateRoom(itemlist) {
     if (!initialized){
         for (let firstroom in itemlist) {
             roomname = firstroom
+            let title = document.getElementById("roomname")
+            title.innerHTML = roomname
             break;
         }
     }
@@ -72,7 +74,9 @@ function updateRoom(itemlist) {
 }
 function changeCurRoom(id) {
     roomname = id
-    console.log(roomname)
+    let title = document.getElementById("roomname")
+    title.innerHTML = id
+    // console.log(roomname)
     updateMap(response)
 
 }
